@@ -4,7 +4,7 @@ const fs = require('fs');
 var client = algorithmia("simDnQUsV485bmlVL1Sa+Vy61Dt1");
 const Axios = require('axios');
 const Path = require('path')
-const token = '';
+const token = '614952040:AAFrU2x37Snsd_hr5vfKWP_GHTGwLN35QbU';
 
 const bot = new TelegramBot(token, { polling: true });
 var file_to_save;
