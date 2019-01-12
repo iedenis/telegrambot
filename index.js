@@ -1,11 +1,14 @@
 const TelegramBot = require('node-telegram-bot-api');
 var algorithmia = require("algorithmia");
 const fs = require('fs');
-const config = require('./config.json');
-var client = algorithmia(config.ALG_TOKEN || process.env.ALG_TOKEN);
+let config;
+if (moduleAvailable('./config.json')) {
+  config = require('./config.json');
+}
+var client = algorithmia(process.env.ALG_TOKEN || config.ALG_TOKEN);
 const Axios = require('axios');
 const Path = require('path')
-const token =config.BOT_TOKEN || process.env.BOT_TOKEN ;
+const token = (process.env.BOT_TOKEN || config.BOT_TOKEN);
 
 const bot = new TelegramBot(token, { polling: true });
 var file_to_save;
@@ -20,6 +23,14 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 
   bot.sendMessage(chatId, resp);
 });
+
+function moduleAvailable(name) {
+  try {
+    require.resolve(name);
+    return true;
+  } catch (e) { }
+  return false;
+}
 
 function fileDownload(response, remote_file, callback) {
   console.log('response is: ' + response)
@@ -85,7 +96,7 @@ bot.on('message', (msg) => {
   var filePath;
   const chatId = msg.chat.id;
   if (typeof msg.photo == 'undefined') {
-    bot.sendMessage(chatId, "Hi, please upload a photo!")
+    bot.sendMessage(chatId, "Hi, please upload your b&w photo!")
   }
   else {
     const photo = msg.photo;
