@@ -1,10 +1,11 @@
 const TelegramBot = require('node-telegram-bot-api');
 var algorithmia = require("algorithmia");
 const fs = require('fs');
-var client = algorithmia("simDnQUsV485bmlVL1Sa+Vy61Dt1");
+const config = require('./config.json');
+var client = algorithmia(config.ALG_TOKEN || process.env.ALG_TOKEN);
 const Axios = require('axios');
 const Path = require('path')
-const token = '';
+const token =config.BOT_TOKEN || process.env.BOT_TOKEN ;
 
 const bot = new TelegramBot(token, { polling: true });
 var file_to_save;
