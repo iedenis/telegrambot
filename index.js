@@ -16,7 +16,10 @@ if (typeof process.env.NODE_ENV === 'undefined') {
 }
 else if (process.env.NODE_ENV === 'production') {
   bot = new TelegramBot(token);
-  bot.setWebHook(__dirname + bot.token);
+  console.log('setting telegram webhook to url '+__dirname+token)
+  console.log(process.env.HEROKU_URL)
+
+  bot.setWebHook(process.env.WEBHOOK_URL + token);
 }
 
 
