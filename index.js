@@ -10,7 +10,7 @@ const Axios = require('axios');
 const Path = require('path')
 const token = (process.env.BOT_TOKEN || config.BOT_TOKEN);
 
-const bot = new TelegramBot(token, { polling: true });
+const bot = new TelegramBot(token);
 var file_to_save;
 var save_file;
 var chatId;
