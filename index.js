@@ -9,8 +9,14 @@ var client = algorithmia(process.env.ALG_TOKEN || config.ALG_TOKEN);
 const Axios = require('axios');
 const Path = require('path')
 const token = (process.env.BOT_TOKEN || config.BOT_TOKEN);
-
-const bot = new TelegramBot(token);
+let bot;
+console.log('the env is: ' + process.env.NODE_ENV)
+if (process.env.NODE_ENV === 'production') {
+  bot = new Bot(token);
+  bot.setWebHook(process.env.HEROKU_URL + bot.token);
+} else{
+  bot = new TelegramBot(token, { polling: true });
+}
 var file_to_save;
 var save_file;
 var chatId;
@@ -79,13 +85,13 @@ function processFile(path, callback) {
         if (response.error) {
           return console.log("Failed to upload file: " + response.error.message);
         }
-        
+
         //console.log("File uploaded. " + JSON.stringify(response));
       });
     } else {
       console.log("Your file already exists.")
     }
-    fileDownload( remote_file, callback);
+    fileDownload(remote_file, callback);
 
   });
 }
@@ -97,12 +103,12 @@ bot.on('polling_error', error => console.log(error))
 
 bot.on('message', (msg) => {
   var filePath;
-   chatId = msg.chat.id;
+  chatId = msg.chat.id;
   if (typeof msg.photo == 'undefined') {
     bot.sendMessage(chatId, "Hi, please upload your b&w photo!")
   }
   else {
-    console.log('the type of the message is: '+typeof(msg))
+    console.log('the type of the message is: ' + typeof (msg))
     const photo = msg.photo;
     const fileId = photo[2].file_id;
     bot.downloadFile(fileId, __dirname + '/images/')
