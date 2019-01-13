@@ -13,7 +13,7 @@ const token = (process.env.BOT_TOKEN || config.BOT_TOKEN);
 const bot = new TelegramBot(token, { polling: true });
 var file_to_save;
 var save_file;
-
+var chatId;
 var nlp_directory = client.dir("data://ie_denis/nlp_directory")
 
 bot.onText(/\/echo (.+)/, (msg, match) => {
@@ -24,6 +24,7 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
   bot.sendMessage(chatId, resp);
 });
 
+// function to check the /config.json existing
 function moduleAvailable(name) {
   try {
     require.resolve(name);
@@ -32,8 +33,8 @@ function moduleAvailable(name) {
   return false;
 }
 
-function fileDownload(response, remote_file, callback) {
-  console.log('response is: ' + response)
+function fileDownload(remote_file, callback) {
+  //console.log('response is: ' + response)
   console.log('remote_file is: ' + remote_file)
   client.file(remote_file).exists(function (exists) {
     // Download contents of file as a string if it exists
@@ -46,7 +47,7 @@ function fileDownload(response, remote_file, callback) {
       }
 
       var input = data;
-
+      bot.sendMessage(chatId, 'colorizing your photo ...')
       client.algo("deeplearning/ColorfulImageColorization/1.1.13")
         .pipe(input)
         .then(function (response) {
@@ -56,7 +57,6 @@ function fileDownload(response, remote_file, callback) {
             if (err) console.log(err)
             else {
               save_file = Math.random().toString(36).substring(7) + '.png';
-
               fs.writeFileSync('./files/' + save_file, data);
               callback(save_file);
             }
@@ -78,12 +78,14 @@ function processFile(path, callback) {
         if (response.error) {
           return console.log("Failed to upload file: " + response.error.message);
         }
-        console.log("File uploaded. " + JSON.stringify(response));
-        fileDownload(response, remote_file, callback);
+        
+        //console.log("File uploaded. " + JSON.stringify(response));
       });
     } else {
       console.log("Your file already exists.")
     }
+    fileDownload( remote_file, callback);
+
   });
 }
 
@@ -94,18 +96,18 @@ bot.on('polling_error', error => console.log(error))
 
 bot.on('message', (msg) => {
   var filePath;
-  const chatId = msg.chat.id;
+   chatId = msg.chat.id;
   if (typeof msg.photo == 'undefined') {
     bot.sendMessage(chatId, "Hi, please upload your b&w photo!")
   }
   else {
+    console.log('the type of the message is: '+typeof(msg))
     const photo = msg.photo;
     const fileId = photo[2].file_id;
     bot.downloadFile(fileId, __dirname + '/images/')
       .then(path => processFile(path, function (save_file) {
-        // console.log('Sending photo '+ __dirname+'/files/'+save_file)
         var photo = __dirname + '/files/' + save_file
-        bot.sendPhoto(chatId, photo, { caption: 'This is your colorized picture' })
+        bot.sendPhoto(chatId, photo, { caption: 'This is your colorized photo' })
       }))
       .catch(err => console.log(err));
   }
