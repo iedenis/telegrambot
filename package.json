@@ -14,6 +14,7 @@
   "dependencies": {
     "algorithmia": "^0.3.10",
     "axios": "^0.18.0",
+    "express": "^4.16.4",
     "node-telegram-bot-api": "^0.30.0",
     "nodemon": "^1.18.9"
   }
