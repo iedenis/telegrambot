@@ -16,8 +16,9 @@ if (typeof process.env.NODE_ENV === 'undefined') {
 }
 else if (process.env.NODE_ENV === 'production') {
   bot = new TelegramBot(token);
-  bot.setWebHook(process.env.HEROKU_URL + bot.token);
+  bot.setWebHook(__dirname + bot.token);
 }
+
 
 var file_to_save;
 var save_file;
