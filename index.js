@@ -47,7 +47,7 @@ function fileDownload(remote_file, callback) {
       }
 
       var input = data;
-      bot.sendMessage(chatId, 'colorizing your photo ...')
+      bot.sendMessage(chatId, 'colorizing your photo . It will take about 30 sec.')
       client.algo("deeplearning/ColorfulImageColorization/1.1.13")
         .pipe(input)
         .then(function (response) {
@@ -58,6 +58,7 @@ function fileDownload(remote_file, callback) {
             else {
               save_file = Math.random().toString(36).substring(7) + '.png';
               fs.writeFileSync('./files/' + save_file, data);
+              console.log('colorized photo saved')
               callback(save_file);
             }
           })
