@@ -10,13 +10,15 @@ const Axios = require('axios');
 const Path = require('path')
 const token = (process.env.BOT_TOKEN || config.BOT_TOKEN);
 let bot;
-console.log('the env is: ' + process.env.NODE_ENV)
-if (process.env.NODE_ENV === 'production') {
-  bot = new Bot(token);
-  bot.setWebHook(process.env.HEROKU_URL + bot.token);
-} else{
+if (typeof process.env.NODE_ENV === 'undefined') {
+  console.log('devmode')
   bot = new TelegramBot(token, { polling: true });
 }
+else if (process.env.NODE_ENV === 'production') {
+  bot = new TelegramBot(token);
+  bot.setWebHook(process.env.HEROKU_URL + bot.token);
+}
+
 var file_to_save;
 var save_file;
 var chatId;
